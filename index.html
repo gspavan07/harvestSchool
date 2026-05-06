@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harvest EM High School | Nurturing Knowledge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: oklch(97% 0.018 70);
+      --surface: oklch(99% 0.008 70);
+      --fg: oklch(22% 0.02 50);
+      --muted: oklch(50% 0.018 50);
+      --border: oklch(90% 0.014 70);
+      --accent: oklch(64% 0.13 28);
+
+      --font-family: 'Poppins', sans-serif;
+      --radius: 16px;
+      --container: 1100px;
+
+      /* Dynamic Spacing */
+      --section-padding: clamp(60px, 10vw, 100px);
+      --header-height: 72px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--fg);
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+    }
+
+    h2 {
+      font-size: clamp(2rem, 5vw, 2.5rem);
+    }
+
+    h3 {
+      font-size: clamp(1.25rem, 3vw, 1.5rem);
+    }
+
+    p {
+      color: var(--muted);
+    }
+
+    .container {
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Sticky Header */
+    header {
+      position: sticky;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: var(--header-height);
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 16px 0;
+    }
+
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: var(--fg);
+      z-index: 1001;
+    }
+
+    .menu-toggle svg {
+      transition: transform 0.3s ease;
+    }
+
+    .menu-toggle.active svg {
+      transform: rotate(90deg);
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      color: var(--fg);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--fg);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .nav-overlay {
+      display: none;
+    }
+
+    .enroll-btn {
+      display: none !important;
+    }
+
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--surface);
+        flex-direction: column;
+        gap: 0;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-links li {
+        width: 100%;
+      }
+
+      .nav-links a {
+        display: block;
+        padding: 12px 24px;
+      }
+    }
+
+    /* Hero Section with Carousel */
+    .hero {
+      padding: calc(var(--header-height) + 60px) 0 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-carousel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .carousel-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      background-color: var(--bg);
+    }
+
+    .carousel-slide.active {
+      opacity: 0.5;
+      /* Subdued for readability as per warm-soft theme */
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      padding: 6px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      margin-bottom: 24px;
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 4vw, 1.2rem);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.2s, background 0.2s;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--fg);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg);
+    }
+
+    /* Section Styling */
+    section {
+      padding: var(--section-padding) 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: clamp(40px, 8vw, 60px);
+    }
+
+    .section-title h2 {
+      font-size: 2.25rem;
+      margin-bottom: 16px;
+    }
+
+    /* About Section */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(32px, 5vw, 60px);
+      align-items: center;
+    }
+
+    .about-content h3 {
+      margin-bottom: 24px;
+    }
+
+    .highlight-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 32px;
+    }
+
+    .highlight-item {
+      background: var(--surface);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .highlight-item span {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .highlight-item strong {
+      font-size: 1.1rem;
+      color: var(--fg);
+    }
+
+    /* Feature Cards */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      padding: 32px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    }
+
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--bg);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      color: var(--accent);
+    }
+
+    /* Academic & Location */
+    .academic-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 40px;
+      border: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    .map-placeholder {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      min-height: 300px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      position: relative;
+      overflow: hidden;
+    }
+
+
+
+    /* Footer */
+    footer {
+      background: var(--surface);
+      padding: 80px 0 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      margin-bottom: 60px;
+    }
+
+    .footer-col h4 {
+      margin-bottom: 24px;
+      font-size: 1rem;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 12px;
+    }
+
+    .footer-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent);
+    }
+
+    .copyright {
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 768px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .about-grid img,
+      .about-grid div[style*="order: 2"] {
+        height: auto !important;
+        aspect-ratio: 4 / 3;
+      }
+
+      .highlight-grid {
+        justify-content: center;
+      }
+
+      .cta-group {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="container nav-content">
+      <div class="logo">HARVEST EM</div>
+      <button class="menu-toggle" aria-label="Toggle Menu">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+      <div class="nav-overlay"></div>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#academics">Academics</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <a href="#apply" class="btn btn-secondary enroll-btn" style="padding: 10px 20px; font-size: 0.85rem;">Enroll
+        Now</a>
+    </div>
+  </header>
+
+  <script>
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    const navOverlay = document.querySelector('.nav-overlay');
+
+    function toggleMenu() {
+      menuToggle.classList.toggle('active');
+      navLinks.classList.toggle('active');
+      navOverlay.classList.toggle('active');
+      document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+    }
+
+    menuToggle.addEventListener('click', toggleMenu);
+    navOverlay.addEventListener('click', toggleMenu);
+
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (navLinks.classList.contains('active')) toggleMenu();
+      });
+    });
+  </script>
+
+  <section class="hero">
+    <div class="hero-carousel">
+      <!-- Placeholder images representing school life -->
+      <div class="carousel-slide active" style="background-image: url('/1.jpg');">
+      </div>
+      <div class="carousel-slide" style="background-image: url('/2.jpg');">
+      </div>
+      <div class="carousel-slide" style="background-image: url('/4.jpg');">
+      </div>
+    </div>
+    <div class="container hero-content">
+      <div class="hero-tag">Established 2007 • English Medium</div>
+      <h1>Nurturing Knowledge,<br>Building Future Leaders</h1>
+      <p>Harvest EM High School provides a foundation of excellence and character for students from Grades 1 to 10 in
+        Pithapuram.</p>
+      <div class="cta-group">
+        <a href="#apply" class="btn btn-primary">Apply for Admission</a>
+        <a href="#contact" class="btn btn-secondary">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Hero Carousel Logic
+    const slides = document.querySelectorAll('.carousel-slide');
+    let currentSlide = 0;
+
+    function nextSlide() {
+      slides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].classList.add('active');
+    }
+
+    setInterval(nextSlide, 5000); // Change slide every 5 seconds
+  </script>
+
+  <section id="about"
+    style="background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-content">
+          <div class="hero-tag" style="margin-bottom: 16px;">Our Story</div>
+          <h2>Academic Excellence Since 2007</h2>
+          <p>HARVEST EM HIGH SCHOOL is a co-educational institution located in the urban heart of Pithapuram. Managed by
+            a dedicated private body, we focus on providing a holistic educational environment that prepares students
+            for the challenges of the future.</p>
+          <div class="highlight-grid">
+            <div class="highlight-item">
+              <span>Established</span>
+              <strong>2007</strong>
+            </div>
+            <div class="highlight-item">
+              <span>Grades</span>
+              <strong>1 to 10</strong>
+            </div>
+            <div class="highlight-item">
+              <span>Board</span>
+              <strong>State Board</strong>
+            </div>
+            <div class="highlight-item">
+              <span>Medium</span>
+              <strong>English</strong>
+            </div>
+          </div>
+        </div>
+        <img src="/3.jpg" alt="School Life"
+          style="width: 100%; height: auto; aspect-ratio: 4/3; object-fit: cover; border-radius: var(--radius); border: 1px solid var(--border);">
+
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="container">
+      <div class="section-title">
+        <h2>Why Choose Harvest?</h2>
+        <p>We provide the right environment for your child's growth and success.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path
+                d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2m16-10a4 4 0 11-8 0 4 4 0 018 0zM23 21v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75">
+              </path>
+            </svg>
+          </div>
+          <h3>Qualified Teachers</h3>
+          <p>Our educators are highly trained and committed to student success through personalized attention.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+              </path>
+            </svg>
+          </div>
+          <h3>Safe Campus</h3>
+          <p>A secure and accessible environment with all-weather road connectivity for easy commuting.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5S19.832 5.477 21 6.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253">
+              </path>
+            </svg>
+          </div>
+          <h3>Academic Rigor</h3>
+          <p>State Board curriculum focused on high performance and holistic development of every child.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="academics" style="background: var(--surface); border-top: 1px solid var(--border);">
+    <div class="container">
+      <div class="about-grid">
+        <img src="/4.jpg" alt="School Life"
+          style="width: 100%; aspect-ratio: 4/3; border-radius: var(--radius); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--muted); order: 2; object-fit: contain;">
+
+
+        <div class="about-content" style="order: 1;">
+          <div class="hero-tag" style="margin-bottom: 16px;">Curriculum</div>
+          <h2>Preparing for a Brighter Future</h2>
+          <p>Our academic session begins in April each year. We follow the State Board curriculum, specifically tailored
+            to ensure students excel in their Class 10 examinations and beyond.</p>
+          <ul style="list-style: none; margin-top: 24px; display: grid; gap: 12px;">
+            <li style="display: flex; align-items: center; gap: 12px;">
+              <div style="color: var(--accent); font-weight: bold;">✓</div>
+              <span>Session Starts: April</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 12px;">
+              <div style="color: var(--accent); font-weight: bold;">✓</div>
+              <span>State Board Examination Prep</span>
+            </li>
+            <li style="display: flex; align-items: center; gap: 12px;">
+              <div style="color: var(--accent); font-weight: bold;">✓</div>
+              <span>Co-educational Environment</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <div class="section-title">
+        <h2>Visit Us</h2>
+        <p>Located in the heart of Pithapuram, Andhra Pradesh.</p>
+      </div>
+      <div class="academic-card">
+        <p style="text-align: center; margin-bottom: 32px; font-size: 1.1rem; color: var(--fg);">
+          5-1-93A, Jeevan Nagar, Seetayyagari Thota, Pithapuram, Andhra Pradesh 533450
+        </p>
+        <div class="map-placeholder">
+          <!-- Google Maps UI Placeholder -->
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3813.0725306504564!2d82.2507931!3d17.117961!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a382bdd609dc341%3A0x764857f460db6056!2sHarvest%20the%20concept%20school!5e0!3m2!1sen!2sin!4v1778095581896!5m2!1sen!2sin"
+            style="border:0;" allowfullscreen="true" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+            width="100%" height="100%"></iframe>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="apply" style="text-align: center; background: var(--fg); color: white;">
+    <div class="container">
+      <h2 style="color: white; margin-bottom: 24px;">Give your child the right foundation</h2>
+      <p
+        style="color: rgba(255,255,255,0.7); max-width: 600px; margin: 0 auto 40px; font-size: clamp(1rem, 4vw, 1.1rem);">
+        Enrollments are now open for the upcoming academic session. Join the Harvest family today.
+      </p>
+      <a href="#" class="btn btn-primary" style="background: white; color: var(--fg);">Apply for Admission</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="logo" style="margin-bottom: 16px;">HARVEST EM</div>
+          <p style="font-size: 0.9rem;">Providing quality education and building future leaders in Pithapuram since
+            2007.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#academics">Academics</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <p style="font-size: 0.9rem; margin-bottom: 8px;">Pithapuram, East Godavari</p>
+          <p style="font-size: 0.9rem; margin-bottom: 8px;">Andhra Pradesh, 533450</p>
+          <p style="font-size: 0.9rem;">Email: contact@harvestschool.in</p>
+        </div>
+
+      </div>
+      <div class="copyright">
+        © 2026 Harvest EM High School. All rights reserved.
+        <p style="font-size: 0.9rem;">Made with ❤️ by <a href="https://ofzen.com"
+            style="color: var(--accent); text-decoration: none;" target="_blank">Ofzen</a></p>
+      </div>
+
+    </div>
+  </footer>
+
+</body>
+
+</html>
